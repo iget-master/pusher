@@ -1,6 +1,8 @@
 # @iget/pusher
 
-## Using
+## Usage
+
+### Importing module
 
 Since Pusher library often require changing config on the fly, the `IgetPusherModule`
 should be imported `forRoot()`, and will receive two arguments:
