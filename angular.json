@@ -124,6 +124,41 @@
           }
         }
       }
+    },
+    "iget-pusher": {
+      "projectType": "library",
+      "root": "projects/iget-pusher",
+      "sourceRoot": "projects/iget-pusher/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/iget-pusher/tsconfig.lib.json",
+            "project": "projects/iget-pusher/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/iget-pusher/src/test.ts",
+            "tsConfig": "projects/iget-pusher/tsconfig.spec.json",
+            "karmaConfig": "projects/iget-pusher/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/iget-pusher/tsconfig.lib.json",
+              "projects/iget-pusher/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "iget-pusher-wrapper"
 }

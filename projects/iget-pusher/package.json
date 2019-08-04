@@ -1,0 +1,15 @@
+{
+  "name": "@iget/pusher",
+  "version": "5.0.0",
+  "description": "Angular wrapper for PusherJS library",
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/common": "^8.2.0",
+    "@angular/core": "^8.2.0",
+    "pusher-js": "^5.0.0"
+  },
+  "devDependencies": {
+    "pusher-js": "^5.0.0",
+    "@types/pusher-js": "^4.2.2"
+  }
+}

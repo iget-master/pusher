@@ -1,27 +1,101 @@
-# IgetPusherWrapper
+# @iget/pusher
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.0.
+## Using
 
-## Development server
+Since Pusher library often require changing config on the fly, the `IgetPusherModule`
+should be imported `forRoot()`, and will receive two arguments:
+1. `configFactory`: a function that should return an `Observable<IgetPusherConfig>`
+2. `dependencies`: a list of dependencies that will be injected as arguments to your config factory
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+This allow changing some settings on the fly:
+* API key (see our demo code)
+* Pusher authentication configuration
 
-## Code scaffolding
+### Samples
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+#### Configuration with asynchronous API_KEY
 
-## Build
+You application might have a service that asynchronously give us the Pusher `API_KEY` through a `get` method that
+return an Observable. 
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Since our factory function can inject this service using the `dependencies` argument, we can inject that server and use it to factory our `IgetPusherConfig` object.
 
-## Running unit tests
+```
+import { IgetPusherModule } from '@iget/pusher'
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+@NgModule({
+  // ...
+  imports: [
+    IgetPusherModule.forRoot((apiKeyService: ApiKeyService) => {
+      return apiKeyService.get().pipe(
+        map((API_KEY: string) => {
+          return {
+            API_KEY,
+            config: {}
+          };
+        })
+      }, [ApiKeyService])
+  ],
+  // ...
+}) 
+```
 
-## Running end-to-end tests
+#### Static configuration
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+On some situations, you just don't need such complex logic on your pusher config,
+se we can use the [`of()` rxjs operator](https://www.learnrxjs.io/operators/creation/of.html)
+to return a static `IgetPusherConfig` object:
 
-## Further help
+```
+import { IgetPusherModule } from '@iget/pusher'
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+@NgModule({
+  // ...
+  imports: [
+    IgetPusherModule.forRoot(() => {
+      of({
+        API_KEY: 'YOUR_PUSHER_KEY',
+        config: {}
+      })
+  ],
+  // ...
+}) 
+```
+
+#### Subscribing to channels and events
+
+```
+interface FooEvent {
+  foo: string,
+}
+
+interface BarEvent {
+  bar: string;
+}
+
+class AppComponent implements OnInit {
+  constructor(private pusher: IgetPusherService) {
+  }
+
+  ngOnInit(): void {
+    const channel = pusher.subscribe('my-channel');
+    
+    // Bind to a single event
+    const bind = channel.bind<FooEvent>('foo-event')
+    bind.subscribe((event: FooEvent) => {
+      console.log('FooEvent received', event);
+    });
+
+    // Bind to all events
+    const globalBind = channel.bindGlobal<FooEvent|BarEvent|any>();
+    globalBind.subscribe((event: FooEvent|BarEvent|any) => {
+      console.log('Global event', event);
+    }
+
+    // Unbinding events - You should unbind to events when you don't
+    // need it anymore, avoiding unecessary data usage
+    bind.unsubscribe();
+    globalBind.unsubscribe();
+  }
+}
+```

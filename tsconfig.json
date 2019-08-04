@@ -17,7 +17,15 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "iget-pusher": [
+        "dist/iget-pusher"
+      ],
+      "iget-pusher/*": [
+        "dist/iget-pusher/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
