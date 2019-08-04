@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {IgetPusherService} from '../../projects/iget-pusher/src/lib/iget-pusher.service';
 import {Channel} from '../../projects/iget-pusher/src/lib/channel';
-import {Bind} from '../../projects/iget-pusher/src/lib/bind';
 import {ApiKeyService} from './api-key.service';
 import {Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
